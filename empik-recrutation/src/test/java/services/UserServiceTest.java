@@ -28,7 +28,7 @@ class UserServiceTest {
 		assertEquals("User", user.getType());
 		assertEquals("https://avatars.githubusercontent.com/u/583231?v=4", user.getAvatarUrl());
 		assertEquals("2011-01-25T18:44:36Z", user.getCreatedAt());
-		assertEquals("0.0149812734082397", user.getCalculations());
+		assertEquals(0.014973795857249813, user.getCalculations());
 	}
 
 }
