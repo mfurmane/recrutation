@@ -18,5 +18,5 @@ public class User {
 	private String type;
 	private String avatarUrl;
 	private String createdAt;
-	private String calculations;
+	private Double calculations;
 }

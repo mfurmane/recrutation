@@ -1,1 +1,4 @@
-# recrutation
+### Uwagi
+* W polu calculations występuje zagrożenie dzieleniem przez zero. W takim przypadku postanowiłem obsłużyć je jako zwrócenie -1, ponieważ poprawnie wykonane obliczenia zawsze zwrócą wartość dodatnią. Jednocześnie pozwoliłem sobie zmienić kolejność działań, żeby zminimalizować błąd spowodowany reprezentacją zmiennoprzecinkową.
+* Zastanawiałem się, w jakim formacie powinienem zwrócić datę utworzenia użytkownika, jednak wartość wyciągnięta z mapy <String, Object> była instancją klasy String, więc uznałem, że w takiej formie ją pozostawię.
+* Wiem, że powodów braku zwrócenia wartości przez api githuba może być kilka (brak użytkownika, timeout, czy chwilowy problem z dostępnością), ale zdecydowałem, że rozróżnianie ich nie ma większego znaczenia, bo dla naszego api istotny jest brak otrzymanych wartości. Zwracam w takiej sytuacji użytkownika o id=-1 i informacji o błędzie w polu name. Można by było zwracać strukturkę Response {User user, int errorCode, String errorMessage} i tam w przypadku powodzenia zwracać usera i kod 200, a w przypadku błędu jego kod i message, ale wytyczne odnośnie zwracanej przez api wartości były bardzo konkretne.

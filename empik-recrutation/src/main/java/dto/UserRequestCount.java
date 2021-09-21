@@ -18,11 +18,12 @@ import lombok.ToString;
 @ToString
 @Entity
 @Table(name = "REQUEST")
-public class UserRequest {
+public class UserRequestCount {
 
 	@Id
 	@Column(name = "LOGIN")
 	private String login;
+	
 	@Column(name = "REQUEST_COUNT")
 	private Integer count;
 

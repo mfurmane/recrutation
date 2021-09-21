@@ -9,27 +9,27 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.ContextConfiguration;
 
-import dto.UserRequest;
-import repositories.UserRequestRepository;
+import dto.UserRequestCount;
+import repositories.UserRequestCountRepository;
 
 @DataJpaTest
 @EnableJpaRepositories("repositories")
 @EntityScan("dto")
-@ContextConfiguration(classes = { RequestSourceImpl.class })
-class RequestSourceTest {
+@ContextConfiguration(classes = { RequestCountSourceImpl.class })
+class RequestCountSourceTest {
 
 	@Autowired
-	RequestSource requestSource;
+	RequestCountSource requestSource;
 
 	@Autowired
-	UserRequestRepository repository;
+	UserRequestCountRepository repository;
 
 	@Test
 	void testIncrement() {
 		String key = "octocat";
-		repository.save(new UserRequest(key, 0));
-		requestSource.increment("octocat");
-		UserRequest userRequest = repository.getById(key);
+		repository.save(new UserRequestCount(key, 0));
+		requestSource.incrementRequestCount("octocat");
+		UserRequestCount userRequest = repository.getById(key);
 		assertEquals(1, userRequest.getCount());
 	}
 

@@ -4,12 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 //@Component
-public class DumbRequestSource implements RequestSource {
+public class DumbRequestCountSource implements RequestCountSource {
 
 	Map<String, Integer> database = new HashMap<>();
 
 	@Override
-	public void increment(String login) {
+	public void incrementRequestCount(String login) {
 		Integer count = 1;
 		if (database.containsKey(login))
 			count = database.get(login) + 1;

@@ -9,7 +9,7 @@ import model.User;
 import services.UserService;
 
 @RestController
-public class ApiController {
+public class UserController {
 
 	@Autowired
 	private UserService userService;

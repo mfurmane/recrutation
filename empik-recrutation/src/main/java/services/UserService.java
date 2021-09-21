@@ -19,53 +19,41 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import model.User;
-import request.sources.RequestSource;
+import request.sources.RequestCountSource;
 
 @Service
 public class UserService {
 
-	@Value("${basic.url}")
+	@Value("${basic.url:https://api.github.com/users/}")
 	private String basicUrl;
-	
+
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Autowired
-	private RequestSource requestSource;
+	private RequestCountSource requestCountSource;
 
 	public User getUser(String login) {
-		requestSource.increment(login);
+		requestCountSource.incrementRequestCount(login);
 		User user = new User();
 		try {
 			URL url = new URL(basicUrl.concat(login));
 			String mainResponse = callUrl(url);
 			ObjectMapper mapper = new ObjectMapper();
 			Map<String, Object> valuesMap = mapper.readValue(mainResponse, Map.class);
-			user.setLogin(valuesMap.get("login").toString());
-			user.setId(Long.parseLong(valuesMap.get("id").toString()));
-			Object name = valuesMap.get("name");
-			user.setName(name !=null ? name.toString() : null);
-			user.setType(valuesMap.get("type").toString());
-			user.setAvatarUrl(valuesMap.get("avatar_url").toString());
-			user.setCreatedAt(valuesMap.get("created_at").toString());
-			user.setCalculations(doCalculations(valuesMap).toString());
+			fillUser(user, valuesMap);
 		} catch (IOException e) {
 			logger.error(e.getMessage(), e);
+			user.setId(-1L);
+			user.setName("Exception at getting user data");
 		}
 		return user;
-	}
-
-	private Double doCalculations(Map<String, Object> valuesMap) {
-		double followers = Double.valueOf(valuesMap.get("followers").toString());
-		double publicRepos = Double.valueOf(valuesMap.get("public_repos").toString());
-		Double calculation = 6 / followers * (2 + publicRepos);
-		return calculation;
 	}
 
 	private String callUrl(URL url) throws MalformedURLException, IOException, ProtocolException {
 		HttpsURLConnection connection = prepareConnection(url);
 		String response = "{}";
-		try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
-			response = readResponse(in);
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+			response = readResponse(reader);
 		}
 		return response;
 	}
@@ -85,6 +73,24 @@ public class UserService {
 			content.append(inputLine);
 		}
 		return content.toString();
+	}
+
+	private void fillUser(User user, Map<String, Object> valuesMap) {
+		user.setLogin(valuesMap.get("login").toString());
+		user.setId(Long.parseLong(valuesMap.get("id").toString()));
+		Object name = valuesMap.get("name");
+		user.setName(name != null ? name.toString() : null);
+		user.setType(valuesMap.get("type").toString());
+		user.setAvatarUrl(valuesMap.get("avatar_url").toString());
+		user.setCreatedAt(valuesMap.get("created_at").toString());
+		user.setCalculations(doCalculations(valuesMap));
+	}
+
+	private Double doCalculations(Map<String, Object> valuesMap) {
+		double followers = Double.valueOf(valuesMap.get("followers").toString());
+		double publicRepos = Double.valueOf(valuesMap.get("public_repos").toString());
+		Double calculation = followers != 0 ? 6 * (2 + publicRepos) / followers : -1;
+		return calculation;
 	}
 
 }

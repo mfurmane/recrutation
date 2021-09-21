@@ -9,11 +9,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 
 import model.User;
-import request.sources.DumbRequestSource;
+import request.sources.DumbRequestCountSource;
 
 @SpringBootTest
 @TestPropertySource(locations = "classpath:test.properties")
-@ContextConfiguration(classes = { UserService.class, DumbRequestSource.class })
+@ContextConfiguration(classes = { UserService.class, DumbRequestCountSource.class })
 class UserServiceTest {
 
 	@Autowired
